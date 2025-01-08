@@ -31,7 +31,8 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 	}
 
 	SessionSettings = MakeShareable(new FOnlineSessionSettings());
-	SessionSettings->bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL" ? true : false;
+	//SessionSettings->bIsLANMatch = IOnlineSubsystem::Get()->GetSubsystemName() == "NULL" ? true : false;
+	SessionSettings->bIsLANMatch = false;
 	SessionSettings->NumPublicConnections = NumPublicConnections;
 	SessionSettings->bAllowJoinInProgress = true;
 	SessionSettings->bAllowJoinViaPresence = true;
