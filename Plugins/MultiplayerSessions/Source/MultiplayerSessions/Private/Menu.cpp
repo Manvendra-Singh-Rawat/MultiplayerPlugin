@@ -1,6 +1,7 @@
 #include "Menu.h"
 #include "Components/Button.h"
 #include "MultiplayerSessionsSubsystem.h"
+#include "GameFramework/GameStateBase.h"
 #include "OnlineSessionSettings.h"
 
 void UMenu::MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")))
@@ -10,7 +11,6 @@ void UMenu::MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch =
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
 	SetIsFocusable(true);
-	//bIsFocusable = true;
 
 	UWorld* World = GetWorld();
 	if (World != nullptr)
@@ -75,6 +75,8 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Session created successfully!"));
 		UWorld* World = GetWorld();
+		//World->b
+		World->GetAuthGameMode()->bUseSeamlessTravel = true;
 		World->ServerTravel(FString("/Game/ThirdPerson/Maps/LobbyLevel?listen"));
 	}
 	else
@@ -123,7 +125,8 @@ void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 		if (PlayerController != nullptr)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, FString::Printf(TEXT("Menu.cpp OnJoinSession() Address: %s"), *Address));
-			PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+			//PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+			PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute, true);
 		}
 	}
 }
@@ -156,19 +159,12 @@ void UMenu::JoinButtonClicked()
 		{
 			return;
 		}
-
-		auto ExistingSession = SessionPtr->GetNamedSession(NAME_GameSession);
-		if (ExistingSession != nullptr)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("Menu.cpp JoinButtonClicked() Previous session is destroyed")));
-			SessionPtr->DestroySession(NAME_GameSession);
-		}
 	}
 
 	if (MultiplayerSessionSubsystem != nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, FString::Printf(TEXT("Menu.cpp JoinButtonClicked()")));
-		MultiplayerSessionSubsystem->FindSessions(1000);
+		MultiplayerSessionSubsystem->FindSessions(10000);
 	}
 }
 
