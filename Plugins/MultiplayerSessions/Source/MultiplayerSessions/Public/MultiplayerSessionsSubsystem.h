@@ -62,6 +62,10 @@ private:
 	FOnStartSessionCompleteDelegate StartSessionCompleteDelegate;
 	FDelegateHandle StartSessionCompleteDelegateHandle;
 
+	bool bCreateSessionOnDestroy{ false };
+	int32 LastNumPublicConnection;
+	FString LastMatchType;
+
 private:
 	TSharedPtr<FOnlineSessionSettings> SessionSettings;
 	TSharedPtr<FOnlineSessionSearch> SessionSearch;
