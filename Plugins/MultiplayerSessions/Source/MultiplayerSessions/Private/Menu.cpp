@@ -4,10 +4,11 @@
 #include "GameFramework/GameStateBase.h"
 #include "OnlineSessionSettings.h"
 
-void UMenu::MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")))
+void UMenu::MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")), FString LobbyPath = TEXT("/Game/ThirdPerson/Maps/LobbyLevel?listen"))
 {
 	NumPublicConnections = NumberOfPublicConnections;
 	MatchType = TypeOfMatch;
+	PathToLobby = FString::Printf(TEXT("%s?listen"), *LobbyPath);
 	AddToViewport();
 	SetVisibility(ESlateVisibility::Visible);
 	SetIsFocusable(true);
@@ -75,9 +76,7 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Session created successfully!"));
 		UWorld* World = GetWorld();
-		//World->b
-		World->GetAuthGameMode()->bUseSeamlessTravel = true;
-		World->ServerTravel(FString("/Game/ThirdPerson/Maps/LobbyLevel?listen"));
+		World->ServerTravel(PathToLobby);
 	}
 	else
 	{
@@ -126,7 +125,7 @@ void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, FString::Printf(TEXT("Menu.cpp OnJoinSession() Address: %s"), *Address));
 			//PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
-			PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute, true);
+			PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 		}
 	}
 }
