@@ -72,7 +72,6 @@ void UMenu::NativeDestruct()
 
 void UMenu::OnCreateSession(bool bWasSuccessful)
 {
-	HostButton->SetIsEnabled(true);
 	if (bWasSuccessful)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Session created successfully!"));
@@ -82,6 +81,7 @@ void UMenu::OnCreateSession(bool bWasSuccessful)
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, TEXT("Session not created!"));
+		HostButton->SetIsEnabled(true);
 	}
 }
 
@@ -103,6 +103,11 @@ void UMenu::OnFindSessions(const TArray<FOnlineSessionSearchResult>& SessionResu
 			MultiplayerSessionSubsystem->JoinSession(Result);
 			return;
 		}
+	}
+
+	if (!bWasSuccessful || SessionResults.Num() == 0)
+	{
+		JoinButton->SetIsEnabled(true);
 	}
 }
 
@@ -128,6 +133,11 @@ void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
 			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Blue, FString::Printf(TEXT("Menu.cpp OnJoinSession() Address: %s"), *Address));
 			PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 		}
+	}
+
+	if (Result != EOnJoinSessionCompleteResult::Success)
+	{
+		JoinButton->SetIsEnabled(true);
 	}
 }
 
